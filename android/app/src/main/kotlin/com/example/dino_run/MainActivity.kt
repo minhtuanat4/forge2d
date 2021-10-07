@@ -1,4 +1,4 @@
-package com.example.dino_run
+package com.example.example_forge2d
 
 import io.flutter.embedding.android.FlutterActivity
 
