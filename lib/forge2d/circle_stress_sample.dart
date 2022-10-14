@@ -12,14 +12,15 @@ import 'package:example_forge2d/forge2d/boundaries.dart';
 class CircleShuffler extends BodyComponent {
   final Vector2 _center;
 
-  CircleShuffler(this._center);
-
+  CircleShuffler(this._center) {
+    debugMode = true;
+  }
   @override
   Body createBody() {
     final bodyDef = BodyDef()
       ..type = BodyType.dynamic
       ..position = _center + Vector2(0.0, -25.0);
-    const numPieces = 5;
+    const numPieces = 12;
     const radius = 6.0;
     final body = world.createBody(bodyDef);
 
@@ -28,13 +29,13 @@ class CircleShuffler extends BodyComponent {
       final yPos = radius * sin(2 * pi * (i / numPieces));
 
       final shape = CircleShape()
-        ..radius = 1.2
+        ..radius = 0.5
         ..position.setValues(xPos, yPos);
 
       final fixtureDef = FixtureDef(shape)
         ..density = 50.0
-        ..friction = .1
-        ..restitution = .9;
+        ..friction = 0
+        ..restitution = 0;
 
       body.createFixture(fixtureDef);
     }
@@ -43,12 +44,18 @@ class CircleShuffler extends BodyComponent {
 
     final revoluteJointDef = RevoluteJointDef()
       ..initialize(body, groundBody, body.position)
-      ..motorSpeed = pi
+      ..motorSpeed = pi * 2 / 3
       ..maxMotorTorque = 1000000.0
       ..enableMotor = true;
 
     world.createJoint(revoluteJointDef);
+
     return body;
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
   }
 }
 
@@ -91,6 +98,7 @@ class CircleStressSample extends Forge2DGame with TapDetector {
     final boundaries = createBoundaries(this);
     boundaries.forEach(add);
     final center = screenToWorld(camera.gameRef.viewport.effectiveSize / 2);
+    addContactCallback(BallWallContactCallback());
     add(CircleShuffler(center));
     add(CornerRamp(center, isMirrored: true));
     add(CornerRamp(center));
@@ -101,9 +109,9 @@ class CircleStressSample extends Forge2DGame with TapDetector {
     super.onTapDown(details);
     final tapPosition = details.eventPosition.game;
     final random = Random();
-    List.generate(15, (i) {
-      final randomVector = (Vector2.random() - Vector2.all(-0.5)).normalized();
-      add(Ball(tapPosition + randomVector, radius: random.nextDouble()));
-    });
+    // List.generate(15, (i) {
+    //   final randomVector = (Vector2.random() - Vector2.all(-0.5)).normalized();
+    //   add(Ball(tapPosition + randomVector, radius: random.nextDouble()));
+    // });
   }
 }

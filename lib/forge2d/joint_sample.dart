@@ -65,4 +65,9 @@ class JointSample extends Forge2DGame with TapDetector {
     add(ball);
     add(CircleShuffler(ball));
   }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+  }
 }

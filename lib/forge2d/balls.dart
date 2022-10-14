@@ -42,7 +42,7 @@ class Ball extends BodyComponent {
     final fixtureDef = FixtureDef(shape)
       ..restitution = 0.8
       ..density = 1.0
-      ..friction = 0.4;
+      ..friction = 0.8;
 
     final bodyDef = BodyDef()
       // To be able to determine object in collision
@@ -116,5 +116,7 @@ class BallWallContactCallback extends ContactCallback<Ball, Wall> {
   }
 
   @override
-  void end(Ball ball, Wall wall, Contact contact) {}
+  void end(Ball ball, Wall wall, Contact contact) {
+    ball.remove();
+  }
 }
